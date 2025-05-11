@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magic Math Trick</title>
   <style>
+    :root {
+      font-size: 16px;
+    }
+
     * {
       box-sizing: border-box;
     }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,171 +22,178 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 10px;
+      padding: 1rem;
     }
+
     .container {
-      background: rgba(255,255,255,0.05);
-      padding: 30px 20px;
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2rem 1.5rem;
+      border-radius: 1.25rem;
       width: 100%;
-      max-width: 500px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      max-width: 480px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
       text-align: center;
       animation: fadeIn 1s ease-in-out;
     }
+
     h1 {
-      font-size: 6vw;
-      margin-bottom: 10px;
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
       color: #fbd786;
     }
+
     p, label {
-      font-size: 4vw;
-      margin-bottom: 20px;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
     }
+
     select, button {
-      padding: 10px;
-      font-size: 4vw;
-      width: 90%;
-      max-width: 300px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      width: 100%;
       border: none;
-      border-radius: 10px;
-      margin: 10px auto;
-      display: block;
+      border-radius: 0.75rem;
+      margin-top: 0.75rem;
       cursor: pointer;
     }
+
     select {
       background-color: #fbd786;
       color: #000;
     }
+
     button {
       background-color: #ffb347;
       color: #000;
       transition: background 0.3s;
     }
+
     button:hover {
       background-color: #ffcc70;
     }
+
     #message {
-      font-size: 5vw;
-      margin-top: 30px;
+      font-size: 1.3rem;
+      margin-top: 2rem;
       min-height: 60px;
     }
-    @media (min-width: 600px) {
-      h1 { font-size: 32px; }
-      p, label, select, button, #message { font-size: 18px; }
-    }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Magic Math Trick</h1>
+    <p id="rangeNote">Think of a number between <strong>0 and 10</strong>. Keep it secret!</p>
 
-<div class="container">
-  <h1>Magic Math Trick</h1>
-  <p id="rangeNote">Think of a number between <strong>0 and 10</strong>. Keep it secret!</p>
+    <label for="level">Choose Difficulty Level:</label>
+    <select id="level" onchange="updateRangeNote()">
+      <option value="1">Level 1 (Simple)</option>
+      <option value="2">Level 2 (Medium)</option>
+      <option value="3">Level 3 (Hard)</option>
+    </select>
 
-  <label for="level">Choose Difficulty Level:</label>
-  <select id="level" onchange="updateRangeNote()">
-    <option value="1">Level 1 (Simple)</option>
-    <option value="2">Level 2 (Medium)</option>
-    <option value="3">Level 3 (Hard)</option>
-  </select>
+    <button onclick="startTrick()">Start Trick</button>
+    <button onclick="nextStep()" style="display:none" id="nextBtn">Next Step</button>
 
-  <button onclick="startTrick()">Start Trick</button>
-  <button onclick="nextStep()" style="display:none" id="nextBtn">Next Step</button>
+    <div id="message"></div>
+  </div>
 
-  <div id="message"></div>
-</div>
+  <script>
+    let steps = [];
+    let currentStep = 0;
+    let answer = 0;
+    const messageDiv = document.getElementById("message");
+    const rangeNote = document.getElementById("rangeNote");
 
-<script>
-  let steps = [];
-  let currentStep = 0;
-  let answer = 0;
-  const messageDiv = document.getElementById("message");
-  const rangeNote = document.getElementById("rangeNote");
-
-  function rand(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function updateRangeNote() {
-    const level = parseInt(document.getElementById("level").value);
-    if (level === 1) rangeNote.innerHTML = "Think of a number between <strong>0 and 10</strong>. Keep it secret!";
-    if (level === 2) rangeNote.innerHTML = "Think of a number between <strong>0 and 20</strong>. Keep it secret!";
-    if (level === 3) rangeNote.innerHTML = "Think of a number between <strong>0 and 30</strong>. Keep it secret!";
-  }
-
-  function generateTrick(level) {
-    let trickSteps = [];
-    let finalAnswer = 0;
-
-    if (level === 1) {
-      let a = rand(5, 15);
-      let b = rand(1, 9);
-      let m = rand(2, 5);
-      finalAnswer = (a - b) * m;
-      trickSteps = [
-        `Add ${a} to your number.`,
-        "Now subtract the number you first thought of.",
-        `Now subtract ${b}.`,
-        `Now multiply the result by ${m}.`,
-      ];
-    } else if (level === 2) {
-      let a = rand(10, 20);
-      let m = rand(2, 6);
-      let b = rand(5, 15);
-      finalAnswer = (a * m) - b;
-      trickSteps = [
-        `Add ${a} to your number.`,
-        "Subtract your original number.",
-        `Multiply the result by ${m}.`,
-        `Now subtract ${b}.`,
-      ];
-    } else if (level === 3) {
-      let a = rand(15, 30);
-      let m1 = rand(2, 4);
-      let b = rand(10, 20);
-      let m2 = rand(2, 5);
-      let c = rand(5, 15);
-      finalAnswer = (((a * m1) - b) * m2) + c;
-      trickSteps = [
-        `Add ${a} to your number.`,
-        "Now subtract your original number.",
-        `Multiply the result by ${m1}.`,
-        `Subtract ${b}.`,
-        `Multiply that by ${m2}.`,
-        `Finally, add ${c}.`,
-      ];
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    trickSteps.push("Let me guess... your final answer is:");
-    return { steps: trickSteps, answer: finalAnswer };
-  }
+    function updateRangeNote() {
+      const level = parseInt(document.getElementById("level").value);
+      if (level === 1) rangeNote.innerHTML = "Think of a number between <strong>0 and 10</strong>. Keep it secret!";
+      if (level === 2) rangeNote.innerHTML = "Think of a number between <strong>0 and 20</strong>. Keep it secret!";
+      if (level === 3) rangeNote.innerHTML = "Think of a number between <strong>0 and 30</strong>. Keep it secret!";
+    }
 
-  function startTrick() {
-    const level = parseInt(document.getElementById("level").value);
-    const result = generateTrick(level);
-    steps = result.steps;
-    answer = result.answer;
-    currentStep = 0;
-    messageDiv.innerText = "";
-    document.getElementById("nextBtn").style.display = "inline-block";
-    nextStep();
-  }
+    function generateTrick(level) {
+      let trickSteps = [];
+      let finalAnswer = 0;
 
-  function nextStep() {
-    if (currentStep < steps.length - 1) {
-      messageDiv.innerText = steps[currentStep];
-      currentStep++;
-    } else {
-      messageDiv.innerText = steps[currentStep] + " " + answer;
+      if (level === 1) {
+        let a = rand(5, 15);
+        let b = rand(1, 9);
+        let m = rand(2, 5);
+        finalAnswer = (a - b) * m;
+        trickSteps = [
+          `Add ${a} to your number.`,
+          "Now subtract the number you first thought of.",
+          `Now subtract ${b}.`,
+          `Now multiply the result by ${m}.`,
+        ];
+      } else if (level === 2) {
+        let a = rand(10, 20);
+        let m = rand(2, 6);
+        let b = rand(5, 15);
+        finalAnswer = (a * m) - b;
+        trickSteps = [
+          `Add ${a} to your number.`,
+          "Subtract your original number.",
+          `Multiply the result by ${m}.`,
+          `Now subtract ${b}.`,
+        ];
+      } else if (level === 3) {
+        let a = rand(15, 30);
+        let m1 = rand(2, 4);
+        let b = rand(10, 20);
+        let m2 = rand(2, 5);
+        let c = rand(5, 15);
+        finalAnswer = (((a * m1) - b) * m2) + c;
+        trickSteps = [
+          `Add ${a} to your number.`,
+          "Now subtract your original number.",
+          `Multiply the result by ${m1}.`,
+          `Subtract ${b}.`,
+          `Multiply that by ${m2}.`,
+          `Finally, add ${c}.`,
+        ];
+      }
+
+      trickSteps.push("Let me guess... your final answer is:");
+      return { steps: trickSteps, answer: finalAnswer };
+    }
+
+    function startTrick() {
+      const level = parseInt(document.getElementById("level").value);
+      const result = generateTrick(level);
+      steps = result.steps;
+      answer = result.answer;
       currentStep = 0;
-      document.getElementById("nextBtn").style.display = "none";
+      messageDiv.innerText = "";
+      document.getElementById("nextBtn").style.display = "inline-block";
+      nextStep();
     }
-  }
-</script>
 
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        messageDiv.innerText = steps[currentStep];
+        currentStep++;
+      } else {
+        messageDiv.innerText = steps[currentStep] + " " + answer;
+        currentStep = 0;
+        document.getElementById("nextBtn").style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
